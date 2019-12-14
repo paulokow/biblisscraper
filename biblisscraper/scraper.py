@@ -55,7 +55,7 @@ def scrap_biblis_book_lents(account_name: str, user: str, password: str):
             {
                 "account_name": account_name,
                 "name": item.xpath('td[4]')[0].text.replace('\u200b',''),
-                "date": datetime.strptime(item.xpath('td[5]')[0].text.replace('\u200b',''), '%d.%m.%Y')
+                "date": datetime.strptime(item.xpath('td[5]')[0].text.replace('\u200b',''), '%d.%m.%Y').date()
             } for item in rows]
 
         return itemslist
