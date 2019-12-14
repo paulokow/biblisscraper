@@ -1,30 +1,17 @@
 from datetime import datetime, timedelta
 from biblisscraper.scraper import scrap_biblis_book_lents
-
+import argparse
+import json
 
 def main():
-    accounts = [
-        {
-            "name": "Karolka",
-            "user": "9027118",
-            "password": "270378"
-        },
-        {
-            "name": "Pawel",
-            "user": "09027107",
-            "password": "200579"
-        },
-        {
-            "name": "Dominika",
-            "user": "09029493",
-            "password": "03102003"
-        },
-        {
-            "name": "Kacper",
-            "user": "09029563",
-            "password": "150308"
-        },
-    ]
+    parser = argparse.ArgumentParser(description='Biblis account scanner')
+    parser.add_argument("-c", "--config", action="store", type=argparse.FileType("r"), default=".settings", help="Config file (JSON)")
+
+    args = parser.parse_args()
+
+    with args.config as config:
+        configobj = json.load(config)
+        accounts = configobj["accounts"]
 
     allitems = [inneritem
                 for outeritem
