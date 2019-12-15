@@ -1,13 +1,13 @@
 Hi,
 
 there are items to return shortly!
-
-{% for group in items|groupby ('account_name') -%}
-Konto: {{ group.grouper }}
-    {%- for item in group.list %}
-    {{item.name.ljust(50)}}: {{item.date.strftime('%d-%m-%Y').ljust(14)}} ({{ (item.date - today).days }} days left)
-    {%- endfor %}
-{%- endfor %}
-
-Than you
+{% for group in items|groupby ('account.name') -%}
+{%- for item in group.list -%}
+{%- if loop.first %}
+Konto: {{ item.account.name }} ({{ item.account.user }})
+{% endif -%}
+- {{item.name.ljust(50)}}: {{item.date.strftime('%d-%m-%Y').ljust(14)}} ({{ (item.date - today).days }} day(s) left) {{ item.remarks }}
+{%- endfor -%}
+{% endfor %}
+Thank you
 Your Biblis Guard

@@ -21,7 +21,7 @@ def main():
 
     allitems = [inneritem
                 for outeritem
-                in [scrap_biblis_book_lents(account["name"], account["user"], account["password"])
+                in [scrap_biblis_book_lents(account)
                         for account
                         in accounts]
                 for inneritem in outeritem]
@@ -29,9 +29,7 @@ def main():
                   if x["date"] <= date.today() + timedelta(days=configobj.get("notify_cut_off", 7))]
 
     if len(shortitems) > 0:
-        #print(shortitems)
         emailcontent = build_email(shortitems, configobj.get("email_template", None))
-        #print(emailcontent)
         for email in configobj.get("notify", []):
             send_email(configobj["email_settings"], emailcontent, email)
 
