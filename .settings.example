@@ -1,0 +1,24 @@
+{
+    "accounts": [
+        {
+            "name": "User1",
+            "user": "username1",
+            "password": "password1"
+        },
+        {
+            "name": "User2",
+            "user": "username2",
+            "password": "password2"
+        }
+    ],
+    "notify_cut_off": 1,
+    "notify": ["John Doe <john@doe.com>"],
+    "email_settings": {
+        "MY_ADDRESS": "checker@doe.com",
+        "MY_ADDRESS_NAME": "BIBLIS CHECKER",
+        "MY_PASSWORD": "smtp password",
+        "MY_SMTP_HOST": "smtp host",
+        "MY_SMTP_PORT": 587
+    },
+    "email_template": "mail_template.txt"
+}
