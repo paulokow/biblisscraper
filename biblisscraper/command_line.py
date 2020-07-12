@@ -19,19 +19,23 @@ def main():
         configobj = json.load(config)
         accounts = configobj["accounts"]
 
-    allitems = [inneritem
-                for outeritem
-                in [scrap_biblis_book_lents(account)
-                        for account
-                        in accounts]
-                for inneritem in outeritem]
-    shortitems = [x for x in allitems
-                  if x["date"] <= date.today() + timedelta(days=configobj.get("notify_cut_off", 7))]
+    try:
+        allitems = [inneritem
+                    for outeritem
+                    in [scrap_biblis_book_lents(account)
+                            for account
+                            in accounts]
+                    for inneritem in outeritem]
+        shortitems = [x for x in allitems
+                      if x["date"] <= date.today() + timedelta(days=configobj.get("notify_cut_off", 7))]
 
-    if len(shortitems) > 0:
-        emailcontent = build_email(shortitems, configobj.get("email_template", None))
+        if len(shortitems) > 0:
+            emailcontent = build_email(shortitems, configobj.get("email_template", None))
+            for email in configobj.get("notify", []):
+                send_email(configobj["email_settings"], emailcontent, email)
+    except Exception as e:
         for email in configobj.get("notify", []):
-            send_email(configobj["email_settings"], emailcontent, email)
+            send_email(configobj["email_settings"], "Error while running biblis checker: {}".format(e), email)
 
 
 def build_email(items, template_file):
@@ -47,6 +51,7 @@ def build_email(items, template_file):
     output = template.render(items=items, today=date.today())
     return output
 
+
 def send_email(settings, content, target):
     print("Sending Email to: {}...".format(target))
     # import the smtplib module. It should be included in Python by default
@@ -61,7 +66,6 @@ def send_email(settings, content, target):
 
     msg = MIMEMultipart()       # create a message
 
-
     # setup the parameters of the message
     msg['From'] = "{} <{}>".format(settings["MY_ADDRESS_NAME"], settings["MY_ADDRESS"])
     msg['To'] = target
@@ -74,6 +78,7 @@ def send_email(settings, content, target):
     s.send_message(msg)
 
     print("...Done!")
+
 
 if __name__ == '__main__':
     main()

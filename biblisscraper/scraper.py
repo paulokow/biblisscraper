@@ -50,13 +50,18 @@ def scrap_biblis_book_lents(account_config: dir):
 
         tree = html.fromstring(tmp.text)
 
-        rows = list(tree.xpath('//table/tr[td]'))
+        noresult = list(tree.xpath("//font/h3[@align='center']"))
+        if len(noresult) == 1 and noresult[0].text == '\r\n*** Sie haben zur Zeit keine Medien entliehen! ***\r\n':
+            return []
+
+        # rows = list(tree.xpath('//table/tr[td]'))
+        rows = list(tree.xpath('//table/tr[count(/td) > 5]'))
         itemslist = [
             {
                 "account": account_config,
-                "name": item.xpath('td[4]')[0].text.replace('\u200b',''),
-                "date": datetime.strptime(item.xpath('td[5]')[0].text.replace('\u200b',''), '%d.%m.%Y').date(),
-                "remarks": item.xpath('td[6]')[0].text.replace('\u200b','').replace('---',''),
+                "name": item.xpath('td[4]')[0].text.replace('\u200b', ''),
+                "date": datetime.strptime(item.xpath('td[5]')[0].text.replace('\u200b', ''), '%d.%m.%Y').date(),
+                "remarks": item.xpath('td[6]')[0].text.replace('\u200b', '').replace('---', ''),
             } for item in rows]
 
         return itemslist
